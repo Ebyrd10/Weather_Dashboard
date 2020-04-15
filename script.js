@@ -16,16 +16,13 @@ var code = 840;
 // Here we are building the URL we need to query the database
 var queryURL = "https://api.openweathermap.org/data/2.5/forecast?q="+ city + "," + state + code + "&appid=" + APIKey;
 
-var forecastArray = [];
+var forecastArray = [ ];
 
 
 $.ajax({
     url: queryURL,
     method: "GET"
   }).then(function(response) {
-    console.log(response)
-    getForecastForEachDay(response.list)
-});
 
 //Gary's Function for populating forecastArray with useful data
 function getForecastForEachDay(params){
@@ -44,9 +41,31 @@ function getForecastForEachDay(params){
       }
     }
   }
+getForecastForEachDay(response.list)
+});
+
+console.log(Array.isArray(forecastArray));
+console.log(forecastArray)
+console.log(forecastArray.length)
+console.log(forecastArray.keys)
+console.log(Object.keys(forecastArray).length)
 
 
-  console.log(forecastArray)
+//   console.log(forecastArray)
+//   console.log("data Array: " + data)
+// console.log(forecastArray[1])
+  //move values from forecastArray to data[]
+//   moveData = function(){
+//   for(var i=0; i < 5; i++){
+    // // data[i].date = forecastArray.dt_txt.split(" ")[0];
+    // data[i].temp = forecastArray[i].main.temp;
+    // data[i].humidity = forecastArray[i].main.humidity;
+    // data[i].windSpeed = forecastArray[i].main.wind.speed;
+//     // // data[i].uvIndex = forecastArray[i].main.wind.speed;
+    
+//   }
+// }
+// moveData();
 
 // //a for loop to select the day that is to be forcasted in the 5 day forcast
 // for (var i = 1; i <= 5; i++){
