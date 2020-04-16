@@ -121,16 +121,7 @@ $(document).ready(function () {
       var newBtn = $("<button>").text(cityList[j]);
       newBtn.on("click", function () {
         event.preventDefault();
-        console.log(city)
         city = $(this).text();
-        console.log(city)
-        // if (cityList.includes(city)) {
-        //   return
-        // }
-        // else if (city === "") { return; }
-        // else {
-        //   cityList.push(city);
-        // };
         renderCityList();
         //Clears the previous city from the current weather box
         $("#todayWeather").text("");
