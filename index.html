@@ -22,31 +22,29 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto nav-centered">
           <li class="nav-item">
-            Weather DashBoard
+            Weather Dashboard
           </li>
         </ul>
       </div>
     </nav>
       
     <div class="container">
-        <!-- Head Row -->
-        <!-- <div class="row">
-            <div class="col-lg-12">
-                Weather Dashboard
-            </div>
-        </div> -->
+        
 
         <div class="row">
-            <div class="col-3" id="citySideBar">
+            <div class="col-lg-3 col-xs-1" id="citySideBar">
                 <h4>Cities</h4>
                 <form id="city-form">
                   <label for="city-input">Search for a city</label>
                   <input type="text" id="city-input"><br>
                 </form>
+                <div id="cityListDisplay" class="col-2">
+
+                </div>
             </div>
             <div class="col" id="weatherDisplay">
               <div class="row">
-                <div id="todayWeather" class="col-12">
+                <div id="todayWeather" class="col-xs-12">
                     <h4>Today's Weather</h4>
                 </div>
                 <div id="fiveDayForcast" class="col-xs-12 container-fluid">

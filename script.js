@@ -117,11 +117,12 @@ $(document).ready(function () {
   renderCityList = function (){
     $("button").remove();
     for (j = 0; j < cityList.length; j++){
-    var newUl = $("<ul>");
+    var cityListDisplay = $("#cityListDisplay")
+    // var newUl = $("<ul>");
     var newBtn = $("<button>").text(cityList[j]);
-    newUl.append(newBtn);
+    cityListDisplay.append(newBtn);
     // $("#city-form").append(newBtn);
-    $("#city-form").append(newUl);
+    // $("#city-form").append(newUl);
     }
   };
 
