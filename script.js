@@ -18,12 +18,12 @@ $(document).ready(function () {
 
   //The main function that gets and renders data onto the page
   var lookUp = function () {
-    //If there is no city in the form field, then just use Reston
-    
-    city = $("#city-input").val().trim();
-    if (!city) {
-      city = "Reston"
-    }
+    // //If there is no city in the form field, then just use Reston
+
+    // city = $("#city-input").val().trim();
+    // if (!city) {
+    //   city = "Reston"
+    // }
     //Reset the URL and the forecase Array to remove the old entries' data
     forecastArray = [];
     queryURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + state + code + "&appid=" + APIKey;
@@ -114,30 +114,51 @@ $(document).ready(function () {
 
   lookUp();
 
-  renderCityList = function (){
+  renderCityList = function () {
     $("button").remove();
-    for (j = 0; j < cityList.length; j++){
-    var cityListDisplay = $("#cityListDisplay")
-    // var newUl = $("<ul>");
-    var newBtn = $("<button>").text(cityList[j]);
-    cityListDisplay.append(newBtn);
-    // $("#city-form").append(newBtn);
-    // $("#city-form").append(newUl);
+    for (j = 0; j < cityList.length; j++) {
+      var cityListDisplay = $("#cityListDisplay")
+      var newBtn = $("<button>").text(cityList[j]);
+      newBtn.on("click", function () {
+        event.preventDefault();
+        console.log(city)
+        city = $(this).text();
+        console.log(city)
+        // if (cityList.includes(city)) {
+        //   return
+        // }
+        // else if (city === "") { return; }
+        // else {
+        //   cityList.push(city);
+        // };
+        renderCityList();
+        //Clears the previous city from the current weather box
+        $("#todayWeather").text("");
+        //Searchs and renders that data for the new city
+        lookUp();
+      })
+      cityListDisplay.append(newBtn);
     }
   };
 
   $("#city-form").on("submit", function (event) {
     event.preventDefault();
     city = $("#city-input").val().trim();
-    if (cityList.includes(city)){
-      return}
-    else if (city === ""){return;} 
+    if (cityList.includes(city)) {
+      return
+    }
+    else if (city === "") { return; }
     else {
-    cityList.push(city);
+      cityList.push(city);
     };
     renderCityList();
     //Clears the previous city from the current weather box
-    var todayWeather = $("#todayWeather").text("");
+    $("#todayWeather").text("");
+    //If there is no city in the form field, then just use Reston
+    city = $("#city-input").val().trim();
+    if (!city) {
+      city = "Reston"
+    }
     //Searchs and renders that data for the new city
     lookUp();
   })
