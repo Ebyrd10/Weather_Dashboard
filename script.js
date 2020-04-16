@@ -1,14 +1,5 @@
 $(document).ready(function() {
 
-// //Data Set of dates and variables waiting to be assigned
-// var data = [
-//     {date: "", temp: 0, humidity: 0, windSpeed: 0, uvIndex: 0}, //Current Date, i = 0
-//     {date: "", temp: 0, humidity: 0, windSpeed: 0, uvIndex: 0}, //the first day of the 5 day forcast, i =1
-//     {date: "", temp: 0, humidity: 0, windSpeed: 0, uvIndex: 0},
-//     {date: "", temp: 0, humidity: 0, windSpeed: 0, uvIndex: 0},
-//     {date: "", temp: 0, humidity: 0, windSpeed: 0, uvIndex: 0},
-//     {date: "", temp: 0, humidity: 0, windSpeed: 0, uvIndex: 0}
-// ];
 
 //Populate the data set with ajax API calls
 var APIKey = "bafd4e5c784edb86b2b6568e8299bfff";
@@ -54,26 +45,27 @@ console.log(forecastArray)
 // //a for loop to select the day that is to be forcasted in the 5 day forcast
 for (var i = 1; i < 5; i++){
     var daySelected = $("#day" + [i]);
-    console.log(daySelected)
-    daySelected.text("")
-    var newDivHeader = $("<h5>").text(forecastArray[i].dt_txt.split(" ")[0])
-    daySelected.append(newDivHeader)
-    var newDivTemp = $("<div>").text("Temp: " + forecastArray[i].main.temp)
-    daySelected.append(newDivTemp)
-    var newDivWeather= $("<div>").text("Weather: " + forecastArray[i].weather[0].main)
-    daySelected.append(newDivWeather)
+    console.log(daySelected);
+    daySelected.text("");
+    var newDivHeader = $("<h5>").text(forecastArray[i].dt_txt.split(" ")[0]);
+    daySelected.append(newDivHeader);
+    var newDivTemp = $("<div>").text("Temp: " + forecastArray[i].main.temp);
+    daySelected.append(newDivTemp);
+    // var newDivWeather= $("<div>").text("Weather: " + forecastArray[i].weather[0].main);
+    // daySelected.append(newDivWeather);
 
     //Adding in the weather icon
-    var newIconCode = forecastArray.weather[0].icon;
-    var IconURL = "http://openweathermap.org/img/w" + newIconCode + ".png"
+    var newIconCode = forecastArray[i].weather[0].icon;
+    console.log(newIconCode)
+    var IconURL = "http://openweathermap.org/img/w/" + newIconCode + ".png"
     var newIcon = $("<div>")
     newIcon.html("<img src=" + IconURL + ">");
     daySelected.append(newIcon)
 
-    var newDivHumidity = $("<div>").text("Humidity: " + forecastArray[i].main.humidity + " %")
-    daySelected.append(newDivHumidity)
-    var newDivWind = $("<div>").text("Windspeed: " + forecastArray[i].wind.speed + " MPH")
-    daySelected.append(newDivWind)
+    var newDivHumidity = $("<div>").text("Humidity: " + forecastArray[i].main.humidity + " %");
+    daySelected.append(newDivHumidity);
+    var newDivWind = $("<div>").text("Windspeed: " + forecastArray[i].wind.speed + " MPH");
+    daySelected.append(newDivWind);
     //  daySelected.children().text(forecastArray[i].main.temp)
 // //another for loop to select the lines of text in that forcast
 //     //loops through the data array to give the selectedDay in the 5 day forcast its proper data
