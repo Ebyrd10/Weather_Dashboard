@@ -1,13 +1,15 @@
 #fiveDayForcast {
-    border:5px solid red;
+    /* border:5px solid red; */
+    padding: 5px;
+    padding-left: 20px;
 }
 #weatherDisplay {
-    border:5px solid purple;
+    /* border:5px solid purple; */
     /* height: 40rem; */
     background-color: lightgrey;
 }
 .card {
-    border: 5px solid blue;
+    border: 2px solid blue;
     border-radius: 20%;
     width: 10rem;
     height: 10rem;
@@ -15,12 +17,12 @@
     margin: .2rem;
 }
 #citySideBar{
-    border: 2px solid green;
+    /* border: 2px solid green; */
     margin-right: 10px;
     background-color: lightgrey;
 }
 #todayWeather {
-    border:5px solid red;
+    /* border:5px solid red; */
     /* height: 10rem; */
     padding: 5rem;
 }
