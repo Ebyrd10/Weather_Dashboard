@@ -14,16 +14,19 @@ $(document).ready(function () {
   var lat = "";
   var lon = "";
   var uvValue = "";
+  var cityList = [];
 
   //The main function that gets and renders data onto the page
   var lookUp = function () {
     //If there is no city in the form field, then just use Reston
+    
     city = $("#city-input").val().trim();
     if (!city) {
       city = "Reston"
     }
+    //Reset the URL and the forecase Array to remove the old entries' data
+    forecastArray = [];
     queryURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + state + code + "&appid=" + APIKey;
-    console.log(queryURL)
 
     $.ajax({
       url: queryURL,
@@ -111,11 +114,27 @@ $(document).ready(function () {
 
   lookUp();
 
+  renderCityList = function (){
+    $("button").remove();
+    for (j = 0; j < cityList.length; j++){
+    var newUl = $("<ul>");
+    var newBtn = $("<button>").text(cityList[j]);
+    newUl.append(newBtn);
+    // $("#city-form").append(newBtn);
+    $("#city-form").append(newUl);
+    }
+  };
+
   $("#city-form").on("submit", function (event) {
     event.preventDefault();
     city = $("#city-input").val().trim();
-    // city = $("city-input").value;
-    console.log($("#city-input").val())
+    if (cityList.includes(city)){
+      return}
+    else if (city === ""){return;} 
+    else {
+    cityList.push(city);
+    };
+    renderCityList();
     //Clears the previous city from the current weather box
     var todayWeather = $("#todayWeather").text("");
     //Searchs and renders that data for the new city
