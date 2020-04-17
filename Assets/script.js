@@ -15,18 +15,61 @@ $(document).ready(function () {
   var lon = "";
   var uvValue = "";
   var cityList = [];
+  var lastCity = "";
+
+  // //A function to check to see if there is a saved cityList in local storage, if there is it then recreates the search history buttons
+  var init = function(){
+    if (localStorage.getItem("storedCityList")){
+      cityList = JSON.parse(localStorage.getItem("storedCityList"));
+      console.log(cityList)
+      //Gets the last looked up city if there is one saved in local storage
+      if (localStorage.getItem("storedLastCity")) {
+      city = localStorage.getItem("storedLastCity")};
+      //Recreates the button list based on the city search history
+      for (j = 0; j < cityList.length; j++) {
+        var cityListDisplay = $("#cityListDisplay")
+        var newBtn = $("<button>").text(cityList[j]);
+        newBtn.on("click", function () {
+          event.preventDefault();
+          city = $(this).text();
+          renderCityList();
+          //Clears the previous city from the current weather box
+          $("#todayWeather").text("");
+          //Searchs and renders that data for the new city
+          lookUp();
+        })
+        cityListDisplay.append(newBtn);
+      }
+  }
+  };
+  // //Running the function to grab any values from local storage
+  init();
+
+  //A function to save the current cityList to local storage
+  var saveToLocalStorage = function() {
+    var cityListStr = JSON.stringify(cityList);
+    localStorage.setItem("storedCityList", cityListStr); 
+  };
 
   //The main function that gets and renders data onto the page
   var lookUp = function () {
-    // //If there is no city in the form field, then just use Reston
+                // //If there is no city in the form field, then just use Reston
 
-    // city = $("#city-input").val().trim();
-    // if (!city) {
-    //   city = "Reston"
+                // city = $("#city-input").val().trim();
+                // if (!city) {
+                //   city = "Reston"
+                // }
+    //Check for a saved last city to search for
+    // if (localStorage.getItem("storedLastCity")) {
+    //   city = JSON.parse(localStorage.getItem("storedLastCity"));
     // }
     //Reset the URL and the forecase Array to remove the old entries' data
     forecastArray = [];
     queryURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + state + code + "&appid=" + APIKey;
+    // //Check for a saved last city to search for
+    // if (localStorage.getItem("storedLastCity")) {
+    //   city = localStorage.getItem("storedLastCity");
+    // }
 
     $.ajax({
       url: queryURL,
@@ -102,7 +145,8 @@ $(document).ready(function () {
         }).then(function (response) {
           uvValue = response.value;
           var todayWeather = $("#todayWeather");
-          var newDivUV = $("<div>").text("UV Index: " + uvValue);
+          var newDivUV = $("<div>").html("UV Index: <span id='uvDisplay'>" + uvValue + "</span>" ) ;
+          
           todayWeather.append(newDivUV);
         });
       };
@@ -110,6 +154,10 @@ $(document).ready(function () {
       getUVindex();
 
     }); //End of Ajax
+    //Saves the last looked up city so that we can save it to local storage and bring it up later
+    console.log(city)
+    lastCity = city;
+    localStorage.setItem("storedLastCity", lastCity); 
   }; //end of the lookUp function
 
   lookUp();
@@ -130,12 +178,16 @@ $(document).ready(function () {
       })
       cityListDisplay.append(newBtn);
     }
+    saveToLocalStorage();
   };
 
   $("#city-form").on("submit", function (event) {
     event.preventDefault();
+    $("#todayWeather").text("");
     city = $("#city-input").val().trim();
+    //if the city has been searched before, dont create a new button, but still allow the weather lookup request to go through
     if (cityList.includes(city)) {
+      lookUp();
       return
     }
     else if (city === "") { return; }
@@ -143,8 +195,8 @@ $(document).ready(function () {
       cityList.push(city);
     };
     renderCityList();
+    // saveToLocalStorage();
     //Clears the previous city from the current weather box
-    $("#todayWeather").text("");
     //If there is no city in the form field, then just use Reston
     city = $("#city-input").val().trim();
     if (!city) {
