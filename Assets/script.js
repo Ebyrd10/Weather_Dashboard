@@ -7,7 +7,6 @@ $(document).ready(function () {
   var state = "Virginia";
   var code = 840;
   // Here we are building the URL we need to query the database
-  // var queryURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + state + code + "&appid=" + APIKey;
   var queryURL = "";
 
   var forecastArray = [];
@@ -21,7 +20,6 @@ $(document).ready(function () {
   var init = function(){
     if (localStorage.getItem("storedCityList")){
       cityList = JSON.parse(localStorage.getItem("storedCityList"));
-      console.log(cityList)
       //Gets the last looked up city if there is one saved in local storage
       if (localStorage.getItem("storedLastCity")) {
       city = localStorage.getItem("storedLastCity")};
@@ -53,29 +51,17 @@ $(document).ready(function () {
 
   //The main function that gets and renders data onto the page
   var lookUp = function () {
-                // //If there is no city in the form field, then just use Reston
-
-                // city = $("#city-input").val().trim();
-                // if (!city) {
-                //   city = "Reston"
-                // }
-    //Check for a saved last city to search for
-    // if (localStorage.getItem("storedLastCity")) {
-    //   city = JSON.parse(localStorage.getItem("storedLastCity"));
-    // }
+    var currentDateInFormat = "04/16/2020";
     //Reset the URL and the forecase Array to remove the old entries' data
     forecastArray = [];
     queryURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + state + code + "&appid=" + APIKey;
-    // //Check for a saved last city to search for
-    // if (localStorage.getItem("storedLastCity")) {
-    //   city = localStorage.getItem("storedLastCity");
-    // }
 
     $.ajax({
       url: queryURL,
       method: "GET"
     }).then(function (response) {
       //Stores the longitude and latitude of the the city to get the UV index later
+      console.log(response);
       lat = response.city.coord.lat
       lon = response.city.coord.lon
       // Gary's Function for populating forecastArray with useful data
@@ -112,7 +98,7 @@ $(document).ready(function () {
         newIcon.html("<img src=" + IconURL + ">");
         daySelected.append(newIcon)
 
-        var newDivTemp = $("<div>").text("Temp: " + forecastArray[i].main.temp);
+        var newDivTemp = $("<div>").text("Temp: " + ((forecastArray[i].main.temp)*(9/5) - 459.67).toFixed(2) + " °F");
         daySelected.append(newDivTemp);
         var newDivHumidity = $("<div>").text("Humidity: " + forecastArray[i].main.humidity + "%");
         daySelected.append(newDivHumidity);
@@ -120,21 +106,28 @@ $(document).ready(function () {
 
 
       //Today's weather
+      queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      }).then(function (response) {
       //The Header for Today
       var todayWeather = $("#todayWeather");
       var newTodayHeader = $("<h4>")
       //Adding in the weather icon
-      var newIconCode = forecastArray[0].weather[0].icon;
+      var newIconCode = response.weather[0].icon;
       var IconURL = "http://openweathermap.org/img/w/" + newIconCode + ".png"
-      newTodayHeader.html("<strong>" + city + "</strong>" + " " + "(" + forecastArray[0].dt_txt.split(" ")[0] + ")" + "<img src=" + IconURL + ">");
+      console.log(response)
+      newTodayHeader.html("<strong>" + city + "</strong>" + " " + "(" + currentDateInFormat + ")" + "<img src=" + IconURL + ">");
       todayWeather.append(newTodayHeader)
       //Adding in details about today's weather
-      var newDivTemp = $("<div>").text("Temp: " + forecastArray[0].main.temp);
+      var newDivTemp = $("<div>").text("Temp: " + ((response.main.temp)*(9/5) - 459.67).toFixed(2) + " °F");
       todayWeather.append(newDivTemp);
-      var newDivHumidity = $("<div>").text("Humidity: " + forecastArray[0].main.humidity + "%");
+      var newDivHumidity = $("<div>").text("Humidity: " + response.main.humidity + "%");
       todayWeather.append(newDivHumidity);
-      var newDivWind = $("<div>").text("Windspeed: " + forecastArray[0].wind.speed + " MPH");
+      var newDivWind = $("<div>").text("Windspeed: " + response.wind.speed + " MPH");
       todayWeather.append(newDivWind);
+    });
 
 
       var getUVindex = function () {
@@ -146,7 +139,14 @@ $(document).ready(function () {
           uvValue = response.value;
           var todayWeather = $("#todayWeather");
           var newDivUV = $("<div>").html("UV Index: <span id='uvDisplay'>" + uvValue + "</span>" ) ;
-          
+          $("#uvDisplay").toggleClass("uvDisplayBad")
+          console.log($("#uvDisplay"))
+          if (uvValue >= 9){
+          newDivUV.toggleClass("uvDisplayBad")}
+          else if (uvValue >= 5){
+            newDivUV.toggleClass("uvDisplayNeutral")}
+          else {
+              newDivUV.toggleClass("uvDisplayGood")}
           todayWeather.append(newDivUV);
         });
       };
@@ -155,7 +155,6 @@ $(document).ready(function () {
 
     }); //End of Ajax
     //Saves the last looked up city so that we can save it to local storage and bring it up later
-    console.log(city)
     lastCity = city;
     localStorage.setItem("storedLastCity", lastCity); 
   }; //end of the lookUp function

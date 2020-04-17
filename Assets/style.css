@@ -60,6 +60,14 @@
     margin-bottom: 50px;
 }
 
-#uvDisplay {
-    background-color: yellowgreen;
+.uvDisplayBad {
+    background-color: red;
 }
+
+.uvDisplayGood {
+    background-color: greenyellow;
+}
+.uvDisplayNeutral {
+    background-color: yellow;
+}
+
