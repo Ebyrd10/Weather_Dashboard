@@ -51,7 +51,6 @@ $(document).ready(function () {
 
   //The main function that gets and renders data onto the page
   var lookUp = function () {
-    var currentDateInFormat = "04/16/2020";
     //Reset the URL and the forecase Array to remove the old entries' data
     forecastArray = [];
     queryURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + state + code + "&appid=" + APIKey;
@@ -61,7 +60,6 @@ $(document).ready(function () {
       method: "GET"
     }).then(function (response) {
       //Stores the longitude and latitude of the the city to get the UV index later
-      console.log(response);
       lat = response.city.coord.lat
       lon = response.city.coord.lon
       // Gary's Function for populating forecastArray with useful data
@@ -75,7 +73,7 @@ $(document).ready(function () {
             // We need to extract just the date part and ignore the time
             currentDate = dateOfListItem;
             // Push this weather object to the forecasts array
-            if (forecastArray.length < 5) {
+            if (forecastArray.length < 6) {
               forecastArray.push(params[i]);
             }
           }
@@ -85,8 +83,8 @@ $(document).ready(function () {
 
       //5 Day forcast
       // //a for loop to select the day that is to be forcasted in the 5 day forcast
-      for (var i = 0; i < forecastArray.length; i++) {
-        var daySelected = $("#day" + [i]);
+      for (var i = 1; i < forecastArray.length; i++) {
+        var daySelected = $("#day" + [i-1]);
         daySelected.text("");
         var newDivHeader = $("<h5>").text(forecastArray[i].dt_txt.split(" ")[0]);
         daySelected.append(newDivHeader)
@@ -106,28 +104,21 @@ $(document).ready(function () {
 
 
       //Today's weather
-      queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey
-      $.ajax({
-        url: queryURL,
-        method: "GET"
-      }).then(function (response) {
       //The Header for Today
       var todayWeather = $("#todayWeather");
       var newTodayHeader = $("<h4>")
       //Adding in the weather icon
-      var newIconCode = response.weather[0].icon;
+      var newIconCode = forecastArray[0].weather[0].icon;
       var IconURL = "http://openweathermap.org/img/w/" + newIconCode + ".png"
-      console.log(response)
-      newTodayHeader.html("<strong>" + city + "</strong>" + " " + "(" + currentDateInFormat + ")" + "<img src=" + IconURL + ">");
+      newTodayHeader.html("<strong>" + city + "</strong>" + " " + "(" + (forecastArray[0].dt_txt.split(" ")[0]) + ")" + "<img src=" + IconURL + ">");
       todayWeather.append(newTodayHeader)
       //Adding in details about today's weather
-      var newDivTemp = $("<div>").text("Temp: " + ((response.main.temp)*(9/5) - 459.67).toFixed(2) + " °F");
+      var newDivTemp = $("<div>").text("Temp: " + ((forecastArray[0].main.temp)*(9/5) - 459.67).toFixed(2) + " °F");
       todayWeather.append(newDivTemp);
-      var newDivHumidity = $("<div>").text("Humidity: " + response.main.humidity + "%");
+      var newDivHumidity = $("<div>").text("Humidity: " + forecastArray[0].main.humidity + "%");
       todayWeather.append(newDivHumidity);
-      var newDivWind = $("<div>").text("Windspeed: " + response.wind.speed + " MPH");
+      var newDivWind = $("<div>").text("Windspeed: " + forecastArray[0].wind.speed + " MPH");
       todayWeather.append(newDivWind);
-    });
 
 
       var getUVindex = function () {
@@ -138,10 +129,8 @@ $(document).ready(function () {
         }).then(function (response) {
           uvValue = response.value;
           var todayWeather = $("#todayWeather");
-          var newDivUV = $("<div>").html("UV Index: <span id='uvDisplay'>" + uvValue + "</span>" ) ;
-          $("#uvDisplay").toggleClass("uvDisplayBad")
-          console.log($("#uvDisplay"))
-          if (uvValue >= 9){
+          var newDivUV = $("<div>").html("UV Index:" + uvValue);
+          if (uvValue >= 8){
           newDivUV.toggleClass("uvDisplayBad")}
           else if (uvValue >= 5){
             newDivUV.toggleClass("uvDisplayNeutral")}
@@ -161,6 +150,7 @@ $(document).ready(function () {
 
   lookUp();
 
+  //Displays the cityList in the citySidebar and generates btns and event listners for each one
   renderCityList = function () {
     $("button").remove();
     for (j = 0; j < cityList.length; j++) {
@@ -175,11 +165,14 @@ $(document).ready(function () {
         //Searchs and renders that data for the new city
         lookUp();
       })
+      //Appends the button to the city list display before iteratting over the loop again
       cityListDisplay.append(newBtn);
     }
+    //Save the current list of city to local storage at the end of rendering search history + buttons
     saveToLocalStorage();
   };
 
+  //Setting up an event listner for the citySidebar
   $("#city-form").on("submit", function (event) {
     event.preventDefault();
     $("#todayWeather").text("");
@@ -194,7 +187,6 @@ $(document).ready(function () {
       cityList.push(city);
     };
     renderCityList();
-    // saveToLocalStorage();
     //Clears the previous city from the current weather box
     //If there is no city in the form field, then just use Reston
     city = $("#city-input").val().trim();
