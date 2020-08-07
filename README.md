@@ -14,7 +14,7 @@
 
 A weather website with a 5-day forecast and favorite cities stored in local storage.
 
-![weather_dashboard](weather_dashboard.jpg)
+![weather_dashboard](weather_dashboard.PNG)
 
 ## Technology
 	
