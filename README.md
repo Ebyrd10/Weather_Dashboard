@@ -7,9 +7,6 @@
   <a href="https://github.com/Ebyrd10/burgers_taskmaster/graphs/commit-activity" target="_blank">
     <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" />
   </a>
-  <a href="https://github.com/Ebyrd10/burgers_taskmaster/blob/master/LICENSE" target="_blank">
-    <img alt="License: MIT" src="https://img.shields.io/github/license/Ebyrd10/burgers_taskmaster" />
-  </a>
 </p>
 
 A weather website with a 5-day forecast and favorite cities stored in local storage.
